@@ -51,23 +51,35 @@ A API estará disponível em: `http://localhost:8080`
 
 ---
 
-## 📡 Endpoints da API (`LinkController`)
+## 📡 Endpoints da API
 
-Abaixo estão as rotas principais disponíveis para interação com a API:
+Abaixo estão as rotas principais disponíveis. A documentação interativa completa pode ser acessada via **Swagger UI** em `http://localhost:8080/swagger-ui.html` com a aplicação rodando.
 
-| Método    | Endpoint         | Descrição                                      | Exemplo de Payload / Path                                        |
-| :-------  | :--------------- | :--------------------------------------------- | :--------------------------------------------------------------- |
-| `POST`    | `/shorten`       | Encurta uma nova URL e a persiste no banco.    | `{"urlOriginal": "https://google.com"}`                          |
-| `GET`     | `/{code}`        | Redireciona o usuário para a URL original.     | `/a1B2c3`                                                        |
-| `DELETE`  | `/delete/{id}`   | Remove um link permanentemente do sistema.     | `/delete/1`                                                      |
-| `POST`    | `/qrcodes`       | Gera Qrcode.                                   | `{"url": "https://google.com"}`                                  |
-| `POST`    | `/auth/login`    | Realiza login com geração de token JWT.        | `{"email": "email@email.com","password":Senha@1234}`             |
-| `POST`    | `/atttoken`      | Gera um novo par de tokens.                    | `{"refreshToken": "eyJhbGciOiJIUzI1..."}`                        |
-| `POST`    | `/create/user`   | Cadastra um novo usuário no sistema.           | `{"name": "t", "email": "t@email.com", "password": "Senha@123"}` |
-| `PUT`     | `/edit/user/{id}`| Atualiza os dados cadastrais de um usuário.    | `/edit/user/550e8400-e29b-41d4-a716-446655440000`                |
-| `PUT`     | `/reset/password/user/{id}`| Altera a senha de um usuário específico. | `{"oldPassword": "...", "newPassword": "..."}`               |
-| `DELETE`  | `/delete/user/{id}`| Remove um usuário permanentemente do sistema.| `/delete/user/550e8400-e29b-41d4-a716-446655440000`              |
+### 🔐 Autenticação e Usuários (`UserController` & `AuthController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `POST` | `/auth/login` | Realiza login e retorna o Token JWT. |
+| `POST` | `/atttoken` | Atualiza o Access Token utilizando um Refresh Token. |
+| `POST` | `/users` | Cadastra um novo usuário no sistema. |
+| `PUT` | `/users` | Atualiza os dados cadastrais do usuário logado. |
+| `DELETE` | `/users` | Remove permanentemente a conta do usuário logado. |
+| `PUT` | `/users/change-password` | Altera a senha do usuário logado (requer senha antiga). |
+| `POST` | `/users/forgot-password` | Solicita o envio de token para recuperação de senha por e-mail. |
+| `POST` | `/users/reset-password-token` | Redefine a senha utilizando o token de segurança enviado. |
 
+### 🔗 Gerenciamento de Links (`LinkController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `POST` | `/links/shorten` | Encurta uma nova URL e a persiste no banco de dados. |
+| `GET` | `/links/{code}` | Redireciona o acesso para a URL original correspondente. |
+| `DELETE` | `/links/{id}` | Remove um link encurtado pelo ID. |
+
+### 🖼️ Utilidades (`QrCodeController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `POST` | `/qrcodes` | Gera um QR Code para a URL informada no payload. |
+
+---
 
 
 ## 🏗️ Estrutura de Configuração
@@ -89,6 +101,7 @@ O projeto utiliza **Spring Profiles** para alternar entre ambientes de forma tra
 ### 🔐 Autenticação e Segurança
 - [X] Implementar cadastro de usuários.
 - [X] Implementar autenticação stateless utilizando **Spring Security** e **JWT**.
+- [x] Fluxo de recuperação de senha (Forgot Password).
 
 ### 📈 Inteligência e Métricas
 - [ ] Implementar coleta e exibição de estatísticas de utilização dos links (cliques, origem, data).
