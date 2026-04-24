@@ -106,5 +106,10 @@ O projeto utiliza **Spring Profiles** para alternar entre ambientes de forma tra
 ### 📈 Inteligência e Métricas
 - [ ] Implementar coleta e exibição de estatísticas de utilização dos links (cliques, origem, data).
 
+## 🚧 Status do Front-end
+Atualmente, a API está 100% funcional e documentada via Swagger. O front-end está em fase de planejamento e desenvolvimento, com o objetivo de oferecer uma interface amigável para:
+* Gestão de links e usuários.
+* Fluxo visual de recuperação de senha (UI/UX para os tokens de reset).
+* Dashboard de estatísticas.
 ---
 **Desenvolvido por Luiz** – Full Stack Developer.
