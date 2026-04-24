@@ -36,7 +36,7 @@ ambiente de desenvolvimento e produção.
     Crie um arquivo `.env` na raiz do projeto:
     ```env
     DB_POSTGRES_DOCKER=brevitylink_db
-    DB_POSTGRES_USER_DOCKER=postgres
+    DB_POSTGRES_USER_DOCKER=user
     DB_POSTGRES_PASSWORD_DOCKER=sua_senha
     PORT_DOCKER=5432
     ```
@@ -86,8 +86,29 @@ Abaixo estão as rotas principais disponíveis. A documentação interativa comp
 
 O projeto utiliza **Spring Profiles** para alternar entre ambientes de forma transparente:
 
-* **Perfil `dev`:** Configurado para desenvolvimento local (IDE). Lê as configurações do arquivo `application-dev.properties` (não versionado por segurança).
-* **Perfil `docker`:** Ativado automaticamente via `docker-compose`. Utiliza variáveis de ambiente para conectar a API ao container do banco de dados `db`.
+### 🔧 Perfil `dev`
+
+Utilizado para desenvolvimento local.
+
+* As configurações são carregadas a partir de variáveis de ambiente
+* Um arquivo `.env` pode ser usado para facilitar a configuração local (não versionado por segurança)
+
+Exemplo de `.env`:
+
+```
+DB_URL=jdbc:mysql://localhost:3306/brevity
+DB_USER=root
+DB_PASSWORD=senha
+SMTP_USER=seu_email
+SMTP_PASS=sua_app_password
+```
+
+### 🐳 Perfil `docker`
+
+Ativado automaticamente via `docker-compose`.
+
+* Utiliza variáveis de ambiente definidas no `docker-compose.yml`
+* Conecta a API ao serviço de banco de dados (`db`)
 
 ---
 
