@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ${DB_POSTGRES_DOCKER}
+      POSTGRES_USER: ${DB_POSTGRES_USER_DOCKER}
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD_DOCKER}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${PORT_DOCKER}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - brevitylink-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_POSTGRES_USER_DOCKER} -d ${DB_POSTGRES_DOCKER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  app:
+    build: .
+    container_name: brevitylink_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_POSTGRES_DOCKER}
+      SPRING_DATASOURCE_USERNAME: ${DB_POSTGRES_USER_DOCKER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_POSTGRES_PASSWORD_DOCKER}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_URL: ${APP_URL}
+      ALPHABET_SECRET: ${ALPHABET_SECRET}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    networks:
+      - brevitylink-network
+
+volumes:
+  postgres_data:
+
+networks:
+  brevitylink-network:
+    driver: bridge
