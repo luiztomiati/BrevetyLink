@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
+@Table(name = "links")
 public class Link {
 
     public Link(String url) {
@@ -32,7 +33,7 @@ public class Link {
     @Column(name = "data_inclusion")
     private LocalDateTime dataInclusion = LocalDateTime.now();
 
-    @OneToOne(mappedBy = "Link", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
     private QrCode qrCode;
 
     @ManyToOne

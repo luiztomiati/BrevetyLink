@@ -1,6 +1,7 @@
 package com.brevitylink.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,10 @@ import java.util.UUID;
 @Data
 @Entity
 @NoArgsConstructor
+@Table(name = "qrcode")
 public class QrCode {
-    public QrCode(Link link ) {
-       this.Link = link;
+    public QrCode(Link link) {
+        this.link = link;
     }
 
     @Id
@@ -22,9 +24,10 @@ public class QrCode {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "link_id")
-    private Link Link;
+    private Link link;
 
     @Column(name = "count_click_qrcode")
     private Integer countClickQrcode;
