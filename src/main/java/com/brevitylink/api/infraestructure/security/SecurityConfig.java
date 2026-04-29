@@ -1,5 +1,6 @@
 package com.brevitylink.api.infraestructure.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${app.links.prefix}")
+    private String linksPrefix;
 
     private final FilterTokenAccess filterTokenAccess;
 
@@ -35,11 +38,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(http -> http.disable())
+                // ADICIONE ESTA LINHA PARA PERMITIR REDIRECIONAMENTOS E FRAMES
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.GET, "/{code}").permitAll();
+                    // Use caminhos diretos para evitar confusão com variáveis
+                    req.requestMatchers(HttpMethod.GET, "/links/{code}").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/users").permitAll();
-                req.requestMatchers("/auth/login", "/login","/users/forgot-password", "/users/reset-password-token","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/users/forgot-password").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/users/reset-password-token").permitAll();
+                    req.requestMatchers("/error").permitAll(); // IMPORTANTE para ver erros reais
+                    req.requestMatchers("/auth/login", "/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(filterTokenAccess, UsernamePasswordAuthenticationFilter.class)

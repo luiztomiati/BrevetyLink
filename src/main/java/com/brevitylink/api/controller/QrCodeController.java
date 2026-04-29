@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/qrcodes")
+
 public class QrCodeController {
 
     private final QrCodeService qrCodeService;
@@ -18,7 +19,7 @@ public class QrCodeController {
     }
 
     @PostMapping(produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQRCode(@RequestParam("url") String url, @AuthenticationPrincipal Users user) {
+    public ResponseEntity<byte[]> postQRCode(@RequestParam("url") String url, @AuthenticationPrincipal Users user) {
         byte[] qrGenerated = qrCodeService.executeGeneratedQrCode(url, user);
         return ResponseEntity.ok(qrGenerated);
     }
