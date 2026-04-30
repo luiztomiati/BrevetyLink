@@ -38,16 +38,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
                 .httpBasic(http -> http.disable())
-                // ADICIONE ESTA LINHA PARA PERMITIR REDIRECIONAMENTOS E FRAMES
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                    // Use caminhos diretos para evitar confusão com variáveis
                     req.requestMatchers(HttpMethod.GET, "/links/{code}").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/users").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/users/forgot-password").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/users/reset-password-token").permitAll();
-                    req.requestMatchers("/error").permitAll(); // IMPORTANTE para ver erros reais
                     req.requestMatchers("/auth/login", "/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
                     req.anyRequest().authenticated();
                 })

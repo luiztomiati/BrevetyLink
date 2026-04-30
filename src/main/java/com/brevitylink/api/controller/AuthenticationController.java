@@ -7,7 +7,6 @@ import com.brevitylink.api.model.Users;
 import com.brevitylink.api.repository.UserRepository;
 import com.brevitylink.api.service.TokenService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-public class AutenticationController {
+@RequestMapping("/auth")
+public class AuthenticationController {
 
 
     private final AuthenticationManager authenticationManager;
@@ -25,13 +25,13 @@ public class AutenticationController {
 
     private final UserRepository userRepository;
 
-    public AutenticationController(AuthenticationManager authenticationManager, TokenService tokenService, UserRepository userRepository) {
+    public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<DadosToken> loginUser(@Valid @RequestBody Login data) {
        var authenticationToken =  new UsernamePasswordAuthenticationToken(data.email(), data.password());
        var authentication = authenticationManager.authenticate(authenticationToken);
@@ -41,7 +41,7 @@ public class AutenticationController {
        return ResponseEntity.ok(new DadosToken(tokenAccess, refreshToken));
     }
 
-    @PostMapping("/atttoken")
+    @PostMapping("/att-token")
     public ResponseEntity<DadosToken> attToken(@Valid @RequestBody RefreshToken data) {
         var refreshToken = data.refreshToken();
         UUID userId = UUID.fromString(tokenService.checkToken(refreshToken));
