@@ -39,7 +39,6 @@ public class UsersService implements UserDetailsService {
     }
 
     public UserResponse createUser(UserRequest user){
-
         Boolean email =  repository.existsByEmailIgnoreCase(user.email());
         Boolean username =  repository.existsByNickNameIgnoreCase(user.nickname());
         if(!email && !username) {

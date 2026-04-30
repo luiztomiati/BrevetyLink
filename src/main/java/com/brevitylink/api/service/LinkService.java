@@ -4,18 +4,20 @@ import com.brevitylink.api.dto.LinkResponse;
 import com.brevitylink.api.model.Link;
 import com.brevitylink.api.model.Users;
 import com.brevitylink.api.repository.LinkRepository;
-import com.brevitylink.api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Id;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.sqids.Sqids;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class LinkService {
@@ -71,5 +73,17 @@ public class LinkService {
         String shortCode = sqids.encode(List.of(link.getId()));
         link.setShortCode(shortCode);
         return linkRepository.save(link);
+    }
+    public Page<LinkResponse> getUserLinks(UUID userId, Pageable pageable) {
+
+        Pageable fixedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("dataInclusion").descending()
+        );
+
+        return linkRepository
+                .findByUserId(userId, fixedPageable)
+                .map(link -> LinkResponse.fromEntity(link, baseUrl));
     }
 }
