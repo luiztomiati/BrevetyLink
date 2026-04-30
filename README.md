@@ -8,13 +8,14 @@ ambiente de desenvolvimento e produção.
 
 ## 🚀 Tecnologias e Ferramentas
 
-* **Java 21** (JDK)
-* **Spring Boot 3** (Framework)
-* **Maven** (Gerenciamento de dependências)
-* **PostgreSQL** (Banco de dados relacional)
-* **Flyway** (Migrações de banco de dados)
-* **Docker & Docker Compose** (Containerização)
-* **Spring Security & JWT** (Segurança e Autenticação)
+* **Java 21**
+* **Spring Boot 3**
+* **Maven**
+* **PostgreSQL**
+* **Flyway**
+* **Docker**
+* **Spring Security & JWT**
+* **Sqids**
 
 ---
 
@@ -39,6 +40,11 @@ ambiente de desenvolvimento e produção.
     DB_POSTGRES_USER_DOCKER=user
     DB_POSTGRES_PASSWORD_DOCKER=sua_senha
     PORT_DOCKER=5432
+    APP_URL=http://localhost:8080
+    JWT_SECRET= chave_JWT
+    ALPHABET_SECRET= alfabeto_secreto
+    MAIL_USER= email
+    MAIL_PASSWORD= senha_app
     ```
 
 3.  **Suba os serviços:**
@@ -46,14 +52,11 @@ ambiente de desenvolvimento e produção.
     ```bash
     docker-compose up -d --build
     ```
-
-A API estará disponível em: `http://localhost:8080`
-
 ---
 
 ## 📡 Endpoints da API
 
-Abaixo estão as rotas principais disponíveis. A documentação interativa completa pode ser acessada via **Swagger UI** em `http://localhost:8080/swagger-ui.html` com a aplicação rodando.
+Abaixo estão as rotas principais disponíveis. A documentação interativa completa pode ser acessada via **Swagger UI** em `url/swagger-ui.html` com a aplicação rodando.
 
 ### 🔐 Autenticação e Usuários (`UserController` & `AuthController`)
 | Método | Endpoint | Descrição |
@@ -70,8 +73,9 @@ Abaixo estão as rotas principais disponíveis. A documentação interativa comp
 ### 🔗 Gerenciamento de Links (`LinkController`)
 | Método | Endpoint | Descrição |
 | :--- | :--- | :--- |
-| `POST` | `/links/shorten` | Encurta uma nova URL e a persiste no banco de dados. |
+| `POST` | `/links` | Encurta uma nova URL e a persiste no banco de dados. |
 | `GET` | `/links/{code}` | Redireciona o acesso para a URL original correspondente. |
+| `GET` | `/links` | Retorna os links do usuário autenticado de forma paginada. |
 | `DELETE` | `/links/{id}` | Remove um link encurtado pelo ID. |
 
 ### 🖼️ Utilidades (`QrCodeController`)
@@ -81,34 +85,12 @@ Abaixo estão as rotas principais disponíveis. A documentação interativa comp
 
 ---
 
-
-## 🏗️ Estrutura de Configuração
-
-O projeto utiliza **Spring Profiles** para alternar entre ambientes de forma transparente:
-
-### 🔧 Perfil `dev`
-
-Utilizado para desenvolvimento local.
-
-* As configurações são carregadas a partir de variáveis de ambiente
-* Um arquivo `.env` pode ser usado para facilitar a configuração local (não versionado por segurança)
-
-Exemplo de `.env`:
-
-```
-DB_URL=jdbc:mysql://localhost:3306/brevity
-DB_USER=root
-DB_PASSWORD=senha
-SMTP_USER=seu_email
-SMTP_PASS=sua_app_password
-```
-
 ### 🐳 Perfil `docker`
 
 Ativado automaticamente via `docker-compose`.
 
 * Utiliza variáveis de ambiente definidas no `docker-compose.yml`
-* Conecta a API ao serviço de banco de dados (`db`)
+* Conecta a API ao serviço de banco de dados
 
 ---
 
